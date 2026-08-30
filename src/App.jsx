@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { loadData, saveData } from './storage';
+import { getStoredApiKey } from './api';
 import HomeView from './components/HomeView';
 import SessionView from './components/SessionView';
 import WrapupView from './components/WrapupView';
 import PartDetailView from './components/PartDetailView';
+import SetupView from './components/SetupView';
 
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
 export default function App() {
-  const [view, setView] = useState('home');
+  const [view, setView] = useState(() => getStoredApiKey() ? 'home' : 'setup');
   const [sessionMessages, setSessionMessages] = useState([]);
   const [activePart, setActivePart] = useState(null);
   const [data, setData] = useState(loadData);
@@ -78,11 +80,15 @@ export default function App() {
 
   return (
     <>
+      {view === 'setup' && (
+        <SetupView onDone={() => setView('home')} />
+      )}
       {view === 'home' && (
         <HomeView
           data={data}
           onStartSession={handleStartSession}
           onViewPart={handleViewPart}
+          onChangeKey={() => setView('setup')}
         />
       )}
       {view === 'session' && (

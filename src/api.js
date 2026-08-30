@@ -1,8 +1,22 @@
-export async function callClaude(messages, systemPrompt, maxTokens = 800) {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_KEY;
+const KEY_STORAGE = 'ifs-api-key';
 
-  if (!apiKey || apiKey === 'placeholder') {
-    throw new Error('API key not configured. Add VITE_ANTHROPIC_KEY to your .env file.');
+export function getStoredApiKey() {
+  return localStorage.getItem(KEY_STORAGE) || '';
+}
+
+export function saveApiKey(key) {
+  localStorage.setItem(KEY_STORAGE, key.trim());
+}
+
+export function clearApiKey() {
+  localStorage.removeItem(KEY_STORAGE);
+}
+
+export async function callClaude(messages, systemPrompt, maxTokens = 800) {
+  const apiKey = getStoredApiKey();
+
+  if (!apiKey) {
+    throw new Error('NO_KEY');
   }
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {

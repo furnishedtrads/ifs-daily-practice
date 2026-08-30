@@ -3,21 +3,17 @@ import ExploreList from './ExploreList';
 import SessionPreview from './SessionPreview';
 import { PARTS, EXPLORE } from '../partsConfig';
 
-const API_KEY = import.meta.env.VITE_ANTHROPIC_KEY;
-
 function todayString() {
   return new Date().toLocaleDateString('en-US', {
     weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
   });
 }
 
-export default function HomeView({ data, onStartSession, onViewPart }) {
+export default function HomeView({ data, onStartSession, onViewPart, onChangeKey }) {
   const partKeys = Object.keys(PARTS);
   const sessions = data.sessions || [];
   const recentSessions = [...sessions].reverse().slice(0, 3);
   const exploreTouchedCount = EXPLORE.filter(e => data.explore?.[e.id]?.touched).length;
-
-  const missingKey = !API_KEY || API_KEY === 'placeholder';
 
   const containerStyle = {
     maxWidth: 680,
@@ -25,19 +21,11 @@ export default function HomeView({ data, onStartSession, onViewPart }) {
     padding: '32px 20px 60px',
   };
 
-  const bannerStyle = {
-    background: '#FFF3CD',
-    border: '1px solid #E6C84A',
-    borderRadius: 10,
-    padding: '14px 18px',
-    marginBottom: 24,
-    fontSize: 14,
-    color: '#7A5C00',
-    lineHeight: 1.6,
-  };
-
   const headerStyle = {
     marginBottom: 32,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   };
 
   const titleStyle = {
@@ -89,19 +77,27 @@ export default function HomeView({ data, onStartSession, onViewPart }) {
 
   return (
     <div style={containerStyle}>
-      {missingKey && (
-        <div style={bannerStyle}>
-          <strong>API key not configured.</strong> Add your Anthropic API key to the{' '}
-          <code>.env</code> file as <code>VITE_ANTHROPIC_KEY</code> and restart the dev server.
-          Sessions with Claude will not work until this is set.
-        </div>
-      )}
-
       <div style={headerStyle}>
-        <h1 style={titleStyle}>IFS Daily Practice</h1>
-        <p style={subtitleStyle}>
-          {todayString()} &nbsp;·&nbsp; {sessions.length} session{sessions.length !== 1 ? 's' : ''} &nbsp;·&nbsp; {exploreTouchedCount}/{EXPLORE.length} themes explored
-        </p>
+        <div>
+          <h1 style={titleStyle}>IFS Daily Practice</h1>
+          <p style={subtitleStyle}>
+            {todayString()} &nbsp;·&nbsp; {sessions.length} session{sessions.length !== 1 ? 's' : ''} &nbsp;·&nbsp; {exploreTouchedCount}/{EXPLORE.length} themes explored
+          </p>
+        </div>
+        <button
+          onClick={onChangeKey}
+          style={{
+            background: 'none',
+            border: 'none',
+            fontSize: 12,
+            color: '#5C6E80',
+            cursor: 'pointer',
+            paddingTop: 4,
+            textDecoration: 'underline',
+          }}
+        >
+          API key
+        </button>
       </div>
 
       <button

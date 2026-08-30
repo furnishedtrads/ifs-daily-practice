@@ -1,0 +1,1 @@
+*,:before,:after{box-sizing:border-box;margin:0;padding:0}body{color:#1c2b3a;background-color:#eff3f7;min-height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;line-height:1.5}button{cursor:pointer;font-family:inherit}textarea{font-family:inherit}@keyframes pulse{0%,80%,to{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
